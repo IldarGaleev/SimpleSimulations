@@ -44,6 +44,10 @@ namespace Gravity
 
         bool track = false;
         bool showVectors = false;
+
+        public bool ShowTracks { get=>track; set => track = value; }
+        public bool ShowInteractions { get => showVectors; set => showVectors = value; }
+
         protected override void OnResize(ResizeEventArgs e)
         {
             mouseFactor = new Vector2d(2.0 / e.Width, -2.0 / e.Height);
