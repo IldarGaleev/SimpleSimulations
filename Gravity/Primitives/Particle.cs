@@ -11,8 +11,8 @@ namespace Gravity.Primitives
     {
         public const double G = 6.67e-11;
         public const double CollapseRadius = 0.007;
-        const double trackSegmentSize = 0.000025;
-        const double maxSpeed = 0.5;
+        double _trackSegmentSize = 0.000025;
+        const double maxSpeed = 300000000;
 
         protected Vector2d _position;
         protected Vector2d _speed;
@@ -24,6 +24,8 @@ namespace Gravity.Primitives
         protected double _collapseRadiusSqr= MathHelper.Pow(CollapseRadius,2);
         protected int _positionStoryDepth;
 
+
+        public double TrackSegmentSize { get=>_trackSegmentSize; set=>_trackSegmentSize=value; }
         public Vector2d Position { 
             get => _position; set
             {
@@ -77,7 +79,7 @@ namespace Gravity.Primitives
         Vector2d lastPos;
         public void Tick(double dTime)
         {
-            if (dTime>0.2)
+            if (dTime > 0.2)
             {
                 return;
             }
@@ -93,7 +95,7 @@ namespace Gravity.Primitives
                 _acceleration = new Vector2d(0);
             }
 
-            if(Vector2d.DistanceSquared(Position, lastPos)>trackSegmentSize)
+            if(Vector2d.DistanceSquared(Position, lastPos)>_trackSegmentSize)
             {
                 lastPos = Position;
                 _positionStory.Add(Position);

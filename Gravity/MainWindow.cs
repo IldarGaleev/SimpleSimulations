@@ -41,12 +41,26 @@ namespace Gravity
         Vector2d moveStart;
 
         double scale = 1;
+        double viewScale = 1;
 
         bool track = false;
         bool showVectors = false;
 
         public bool ShowTracks { get=>track; set => track = value; }
         public bool ShowInteractions { get => showVectors; set => showVectors = value; }
+
+        private double _meterScale;
+        private double _worldSize;
+        public double WorldSize { 
+            get=> _worldSize;
+            set {
+                _worldSize = value;
+                _meterScale = 1.0 / value;
+                scale = viewScale * _meterScale;
+            } 
+        }
+
+        //public double TimeScale { get; set; }
 
         protected override void OnResize(ResizeEventArgs e)
         {
@@ -123,15 +137,17 @@ namespace Gravity
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
-            scale+=e.OffsetY * 0.01;
-            if (scale<0.02)
+            viewScale+=e.OffsetY * 0.01;
+            if (viewScale < 0.02)
             {
-                scale = 0.02;
+                viewScale = 0.02;
             }
-            if (scale>3)
+            if (viewScale > 3)
             {
-                scale = 3;
+                viewScale = 3;
             }
+
+            scale = viewScale * _meterScale;
         }
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
@@ -208,8 +224,8 @@ namespace Gravity
         TimeSpan epoch = new TimeSpan(0);
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
-            
-            
+
+            double trackSegmentSize = 0.005 / _meterScale;
             
             if (FPS.Tick(args.Time))
             {
@@ -230,6 +246,7 @@ namespace Gravity
             accelerations = new List<(Vector2d, Vector2d, Color)>();
             foreach (var item in particles)
             {
+                item.TrackSegmentSize = (trackSegmentSize* trackSegmentSize);
                 item.Interaction(particles, args.Time);
                 item.Tick(args.Time);
                 item.InteractionRadius = item.Mass * interractionK;
@@ -241,14 +258,14 @@ namespace Gravity
                     foreach (var a in item.Accelerations)
                     {
                         bool isMax = a.LengthSquared == max;
-                        var r = (Vector2d.NormalizeFast(a) * (isMax ? 0.04 : 0.02));
+                        var r = (Vector2d.NormalizeFast(a) * (isMax ? 0.04 : 0.02)/_meterScale);
                         accelerations.Add((item.Position, item.Position + r, Color.FromArgb(200, (isMax ? Color.Red : Color.Yellow))));
                     }
                 }
 
             }
 
-            particles.RemoveAll(item => (item.Mass == 0) || (item.Position.Length > 3));
+            particles.RemoveAll(item => (item.Mass == 0) || ((item.Position.Length*_meterScale) > 3));
 
             //particles.RemoveAll(item=> (item.Mass==0));
 

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Gravity": {
+      "commandName": "Project",
+      "commandLineArgs": "-s 1"
+    }
+  }
+}

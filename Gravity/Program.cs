@@ -73,7 +73,9 @@ namespace Gravity
                         Console.Clear();
                         using (MainWindow mainWindow = new MainWindow(gameWindowSettings, nativeWindowSettings, particles) {
                             ShowInteractions=o.ShowInteractions,
-                            ShowTracks=o.ShowTracks 
+                            ShowTracks=o.ShowTracks,
+                            WorldSize=o.WorldSize,
+                            //TimeScale=o.TimeScale
                         })
                         {
                             mainWindow.Title = "Gravity simulation";

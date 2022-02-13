@@ -62,5 +62,22 @@ namespace Gravity.Primitives
             Default = false
             )]
         public bool ShowInteractions { get; set; }
+
+        [Option(
+            longName: "worldsize",
+            shortName: 's',
+            Required = false,
+            HelpText = "How many meters",
+            Default = 1
+            )]
+        public double WorldSize { get; set; }
+
+        //[Option(
+        //    longName: "timescale",
+        //    Required = false,
+        //    HelpText = "Time scale",
+        //    Default = 1
+        //    )]
+        //public double TimeScale { get; set; }
     }
 }
