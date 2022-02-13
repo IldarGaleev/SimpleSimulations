@@ -12,7 +12,8 @@ namespace Gravity.Primitives
         public const double G = 6.67e-11;
         public const double CollapseRadius = 0.007;
         const double trackSegmentSize = 0.000025;
-        
+        const double maxSpeed = 0.5;
+
         protected Vector2d _position;
         protected Vector2d _speed;
         protected Vector2d _acceleration;
@@ -81,9 +82,9 @@ namespace Gravity.Primitives
                 return;
             }
             _speed += _acceleration;
-            if (_speed.Length>0.1)
+            if (_speed.Length > maxSpeed)
             {
-                _speed = Vector2d.NormalizeFast(_speed)*0.3;
+                _speed = Vector2d.NormalizeFast(_speed) * maxSpeed;
             }
 
             if (Fixed)
