@@ -88,6 +88,14 @@ namespace Gravity
             base.OnMouseMove(e);
         }
 
+        private void initRandomParticles()
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                particles.Add(new Particle(Helpers.Randomizer.GetVector(), 1));
+            }
+        }
+
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -161,7 +169,16 @@ namespace Gravity
             {
                 showVectors = !showVectors;
             }
-                        
+
+            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.R)
+            {
+                initRandomParticles();
+            }
+
+            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.E)
+            {
+                particles.Clear();
+            }
         }
 
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
