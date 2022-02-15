@@ -88,11 +88,11 @@ namespace Gravity
             base.OnMouseMove(e);
         }
 
-        private void initRandomParticles()
+        private void InitRandomParticles()
         {
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10; i++)
             {
-                particles.Add(new Particle(Helpers.Randomizer.GetVector(), 1));
+                particles.Add(new Particle(Helpers.Randomizer.GetVector()/scale, 1));
             }
         }
 
@@ -172,12 +172,29 @@ namespace Gravity
 
             if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.R)
             {
-                initRandomParticles();
+                InitRandomParticles();
             }
 
             if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.E)
             {
                 particles.Clear();
+            }
+
+            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.M)
+            {
+                var heavyObject = particles.Find(x => x.Mass == maxMass);
+                heavyObject.PositionStory.Clear();
+                var deltaPos = heavyObject.Position;
+                var heavyObjectSpeed=heavyObject.Speed;
+                foreach (var item in particles)
+                {
+                    item.Speed -= heavyObjectSpeed;
+                    item.Position -= deltaPos;
+                    for (var i=0;i<item.PositionStory.Count;i++)
+                    {
+                        item.PositionStory[i] -= deltaPos;
+                    }
+                }
             }
         }
 
@@ -282,7 +299,7 @@ namespace Gravity
 
             }
 
-            particles.RemoveAll(item => (item.Mass == 0) || ((item.Position.Length*_meterScale) > 3));
+            particles.RemoveAll(item => (item.Mass == 0) || ((item.Position.Length*_meterScale) > 300));
 
             //particles.RemoveAll(item=> (item.Mass==0));
 
@@ -307,7 +324,7 @@ namespace Gravity
                 GL.Begin(PrimitiveType.Lines);
 
                 foreach (var item in accelerations)
-                {
+                {                    
                     GL.Color4(item.Item3);
                     GL.Vertex2(item.Item1*scale);
                     GL.Vertex2(item.Item2*scale);
