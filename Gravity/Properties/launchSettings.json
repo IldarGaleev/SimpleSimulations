@@ -2,7 +2,7 @@
   "profiles": {
     "Gravity": {
       "commandName": "Project",
-      "commandLineArgs": "-s 1"
+      "commandLineArgs": "-s 1 -f -t"
     }
   }
 }
