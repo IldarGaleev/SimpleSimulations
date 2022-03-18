@@ -220,6 +220,10 @@ namespace Gravity
                     findFollow = !findFollow;
                     break;
 
+                case Keys.Escape: /* Exit */
+                    Close();
+                    break;
+
                 default:
                     break;
             }
