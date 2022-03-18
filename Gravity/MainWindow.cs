@@ -47,6 +47,9 @@ namespace Gravity
         bool track = false;
         bool showVectors = false;
 
+        bool findFollow = false;
+        Particle followTo = null;
+
         public bool ShowTracks { get=>track; set => track = value; }
         public bool ShowInteractions { get => showVectors; set => showVectors = value; }
 
@@ -117,6 +120,17 @@ namespace Gravity
                 moveStart = cursorPosition;
                 isMoveScene = true;
             }
+            
+            if (findFollow && e.Button==MouseButton.Left)
+            {
+                var res = particles.FirstOrDefault(x => Vector2d.DistanceSquared(x.Position*scale,cursorPosition) < (0.024));
+                if (res!=null)
+                {
+                    followTo=res;
+                    followTo.PositionStory.Clear();
+                }
+                createParticle = false;
+            }
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
@@ -134,8 +148,10 @@ namespace Gravity
                 {
                     mass *= 1000;
                 }
-                particles.Add(new Particle(newParticlePos/scale, mass, 1) { 
-                    Speed=(cursorPosition-newParticlePos)
+
+                Vector2d followSpeed = followTo?.Speed ?? Vector2d.Zero;
+                particles.Add(new Particle(newParticlePos / scale, mass, 1) {               
+                    Speed=(cursorPosition - newParticlePos)+followSpeed
                 });
                 createParticle = false;
             }
@@ -194,6 +210,14 @@ namespace Gravity
                             item.PositionStory[i] -= deltaPos;
                         }
                     }
+                    break;
+
+                case Keys.U: /* Unfollow */
+                    followTo = null;
+                    break;
+
+                case Keys.F: /* Find follow toggle */
+                    findFollow = !findFollow;
                     break;
 
                 default:
@@ -312,6 +336,11 @@ namespace Gravity
                 cK = 255.0 / maxMass;
                 pixelSize = 3 / maxMass;
             }
+
+            if (followTo!=null)
+            {
+                moveScene(-followTo.Position);
+            }
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)
@@ -377,7 +406,15 @@ namespace Gravity
 
 
             GL.Begin(PrimitiveType.Points);
-            GL.Color3(Color.Blue);
+            if (findFollow)
+            {
+                GL.Color3(Color.Orange);
+            }
+            else
+            {
+                GL.Color3(Color.Blue);
+            }
+            
             GL.Vertex2(cursorPosition);
             if (createParticle)
             {
