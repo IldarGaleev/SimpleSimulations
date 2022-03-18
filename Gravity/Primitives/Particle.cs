@@ -10,7 +10,7 @@ namespace Gravity.Primitives
     public class Particle
     {
         public const double G = 6.67e-11;
-        public const double CollapseRadius = 0.007;
+        public const double CollapseRadius = 0.00175;
         double _trackSegmentSize = 0.000025;
         const double maxSpeed = 300000000;
 
