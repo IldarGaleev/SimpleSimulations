@@ -224,6 +224,11 @@ namespace Gravity
                     Close();
                     break;
 
+                case Keys.D1: /* Reset scale */
+                    scale = 1;
+                    viewScale = 1;
+                    break;
+
                 default:
                     break;
             }
