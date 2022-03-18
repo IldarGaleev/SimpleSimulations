@@ -4,6 +4,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -160,41 +161,43 @@ namespace Gravity
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             base.OnKeyDown(e);
-            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.T)
-            {
-                track = !track;
-            }
 
-            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.A)
+            switch (e.Key)
             {
-                showVectors = !showVectors;
-            }
+                case Keys.T: /* Toggle displaying tracks */
+                    track = !track;
+                    break;
 
-            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.R)
-            {
-                InitRandomParticles();
-            }
+                case Keys.A: /* Toggle displaying vectors */
+                    showVectors = !showVectors;
+                    break;
 
-            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.E)
-            {
-                particles.Clear();
-            }
+                case Keys.R: /* Add random particles */
+                    InitRandomParticles();
+                    break;
 
-            if (e.Key==OpenTK.Windowing.GraphicsLibraryFramework.Keys.M)
-            {
-                var heavyObject = particles.Find(x => x.Mass == maxMass);
-                heavyObject.PositionStory.Clear();
-                var deltaPos = heavyObject.Position;
-                var heavyObjectSpeed=heavyObject.Speed;
-                foreach (var item in particles)
-                {
-                    item.Speed -= heavyObjectSpeed;
-                    item.Position -= deltaPos;
-                    for (var i=0;i<item.PositionStory.Count;i++)
+                case Keys.E: /* Erase simulation objects */
+                    particles.Clear();
+                    break;
+
+                case Keys.M: /* Focus on the heaviest object */
+                    var heavyObject = particles.Find(x => x.Mass == maxMass);
+                    heavyObject.PositionStory.Clear();
+                    var deltaPos = heavyObject.Position;
+                    var heavyObjectSpeed = heavyObject.Speed;
+                    foreach (var item in particles)
                     {
-                        item.PositionStory[i] -= deltaPos;
+                        item.Speed -= heavyObjectSpeed;
+                        item.Position -= deltaPos;
+                        for (var i = 0; i < item.PositionStory.Count; i++)
+                        {
+                            item.PositionStory[i] -= deltaPos;
+                        }
                     }
-                }
+                    break;
+
+                default:
+                    break;
             }
         }
 
