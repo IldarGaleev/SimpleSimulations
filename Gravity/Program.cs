@@ -75,6 +75,7 @@ namespace Gravity
                             ShowInteractions=o.ShowInteractions,
                             ShowTracks=o.ShowTracks,
                             WorldSize=o.WorldSize,
+                            DisplayOriginPoint = o.DisplayOriginPoint,
                             //TimeScale=o.TimeScale
                         })
                         {

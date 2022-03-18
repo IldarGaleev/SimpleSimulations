@@ -31,6 +31,9 @@ namespace Gravity
         Vector2i windowCenter;
 
         Vector2d cursorPosition;
+        Vector2d originPointPosition = Vector2d.Zero;
+        Vector2d originPointMarkerWidth = new Vector2d(0.04, 0);
+        Vector2d originPointMarkerHeight = new Vector2d(0, 0.04);
 
         bool createParticle;
         Vector2d newParticlePos;
@@ -46,12 +49,14 @@ namespace Gravity
 
         bool track = false;
         bool showVectors = false;
+        bool displayOriginPoint = false;
 
         bool findFollow = false;
         Particle followTo = null;
 
         public bool ShowTracks { get=>track; set => track = value; }
         public bool ShowInteractions { get => showVectors; set => showVectors = value; }
+        public bool DisplayOriginPoint { get => displayOriginPoint; set => displayOriginPoint = value; }
 
         private double _meterScale;
         private double _worldSize;
@@ -82,8 +87,8 @@ namespace Gravity
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
             cursorPosition = (MousePosition - windowCenter) * mouseFactor;
-
-            if (isMoveScene)
+            
+            if (isMoveScene&&followTo==null)
             {
                 moveScene((cursorPosition-moveStart)/scale);
                 moveStart = cursorPosition;
@@ -123,11 +128,10 @@ namespace Gravity
             
             if (findFollow && e.Button==MouseButton.Left)
             {
-                var res = particles.FirstOrDefault(x => Vector2d.DistanceSquared(x.Position*scale,cursorPosition) < (0.024));
+                var res = particles.FirstOrDefault(x => Vector2d.DistanceSquared((x.Position+originPointPosition)*scale,cursorPosition) < (0.024));
                 if (res!=null)
                 {
                     followTo=res;
-                    followTo.PositionStory.Clear();
                 }
                 createParticle = false;
             }
@@ -150,7 +154,7 @@ namespace Gravity
                 }
 
                 Vector2d followSpeed = followTo?.Speed ?? Vector2d.Zero;
-                particles.Add(new Particle(newParticlePos / scale, mass, 1) {               
+                particles.Add(new Particle((newParticlePos - originPointPosition * scale) / scale, mass, 1) {               
                     Speed=(cursorPosition - newParticlePos)+followSpeed
                 });
                 createParticle = false;
@@ -210,6 +214,7 @@ namespace Gravity
                             item.PositionStory[i] -= deltaPos;
                         }
                     }
+                    originPointPosition = Vector2d.Zero;
                     break;
 
                 case Keys.U: /* Unfollow */
@@ -227,6 +232,11 @@ namespace Gravity
                 case Keys.D1: /* Reset scale */
                     scale = 1;
                     viewScale = 1;
+                    moveScene(-originPointPosition);
+                    break;
+
+                case Keys.O: /* Show pivot */
+                    displayOriginPoint = !displayOriginPoint;
                     break;
 
                 default:
@@ -276,15 +286,7 @@ namespace Gravity
 
         private void moveScene(Vector2d delta)
         {
-            foreach (var item in particles)
-            {
-                int sCount = item.PositionStory.Count;
-                for (int i = 0; i < sCount; i++)
-                {
-                    item.PositionStory[i] += delta;
-                }
-                item.Position += delta;
-            }
+            originPointPosition += delta;
         }
 
 
@@ -294,7 +296,6 @@ namespace Gravity
         TimeSpan epoch = new TimeSpan(0);
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
-
             double trackSegmentSize = 0.005 / _meterScale;
             
             if (FPS.Tick(args.Time))
@@ -348,7 +349,24 @@ namespace Gravity
 
             if (followTo!=null)
             {
-                moveScene(-followTo.Position);
+                moveScene(-(followTo.Position + originPointPosition) * scale);
+            }
+        }
+
+        private void DrawOriginPointMarker()
+        {
+            if (displayOriginPoint)
+            {
+                GL.Color4(Color.FromArgb(100, Color.Purple));
+                var point = originPointPosition * scale;
+                GL.Begin(PrimitiveType.Lines);
+
+                GL.Vertex2(point - originPointMarkerWidth);
+                GL.Vertex2(point + originPointMarkerWidth);
+
+                GL.Vertex2(point - originPointMarkerHeight);
+                GL.Vertex2(point + originPointMarkerHeight);
+                GL.End();
             }
         }
 
@@ -358,7 +376,8 @@ namespace Gravity
 
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
-           
+
+            DrawOriginPointMarker();
 
             if (accelerations != null && showVectors)
             {
@@ -380,7 +399,7 @@ namespace Gravity
             for (int i = 0; i < count; i++)
             {
                 GL.Color4(Color.FromArgb((int)(particles[i].Mass * cK), 255, 0));
-                GL.Vertex2(particles[i].Position*scale);
+                GL.Vertex2((particles[i].Position + originPointPosition) *scale);
             }
             GL.End();
 
@@ -396,9 +415,9 @@ namespace Gravity
                     for (int j = 0; j < sCount; j++)
                     {
                         GL.Color4(1,1,1,j*cK);
-                        GL.Vertex2(particles[i].PositionStory[j] * scale);
+                        GL.Vertex2((particles[i].PositionStory[j] + originPointPosition) * scale);                      
                     }
-                    GL.Vertex2(particles[i].Position * scale);
+                    GL.Vertex2((particles[i].Position + originPointPosition) * scale);
 
                     GL.End();
                 }
@@ -429,7 +448,7 @@ namespace Gravity
             {
                 GL.Color3(Color.Red);
                 GL.Vertex2(newParticlePos);
-            }
+            }            
             GL.End();
 
             GL.Flush();

@@ -79,5 +79,14 @@ namespace Gravity.Primitives
         //    Default = 1
         //    )]
         //public double TimeScale { get; set; }
+
+        [Option(
+            longName: "origin",
+            shortName: 'o',
+            Required = false,
+            HelpText = "Display origin point",
+            Default = false
+            )]
+        public bool DisplayOriginPoint { get; set; }
     }
 }
