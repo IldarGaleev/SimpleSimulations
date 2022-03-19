@@ -5,7 +5,8 @@ This application uses [Newton's law of gravity](https://en.wikipedia.org/wiki/Ne
 $$ F=G \dfrac{m_1m_2}{r^2} $$
 ![formula](https://render.githubusercontent.com/render/math?math=F=G\dfrac{m_1m_2}{r^2})
 -->
-![Demo](Resources/demo_1.mp4)
+
+https://user-images.githubusercontent.com/26148013/159098245-1f63e998-75ff-4ebb-9062-077299926989.mp4
 
 ## Build from source
 
