@@ -32,7 +32,7 @@ https://user-images.githubusercontent.com/26148013/159098245-1f63e998-75ff-4ebb-
 
 | Command                 | Default                 | Description                                                                 |
 |------------------------ |:-----------------------:|-----------------------------------------------------------------------------|
-| `-c`, `--celestialfile` | Data/celestial_init.csv | csv file with initial celestial bodies                                      |
+| `-c`, `--celestialfile` | [Data/celestial_init.csv](Data/celestial_init.csv) | csv file with initial celestial bodies                                      |
 | `-f`, `--fullscreen`    | false                   | Fullscreen mode                                                             |
 | `-W`, `--width`         | 800                     | Window width                                                                |
 | `-H`, `--height`        | 600                     | Window height                                                               |
