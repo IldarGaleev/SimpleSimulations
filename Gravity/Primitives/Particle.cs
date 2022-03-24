@@ -51,6 +51,7 @@ namespace Gravity.Primitives
         public Vector2d Acceleration { get => _acceleration; set => _acceleration = value; }
 
         public bool Fixed { get; set; }
+        public bool NonCollidable { get; set; }
 
         public Double Mass { get => _mass; set => _mass = value; }
         public Double InteractionRadius
@@ -126,6 +127,7 @@ namespace Gravity.Primitives
                 Vector2d direction = otherParticle.Position - Position;
                 double d2 = direction.LengthSquared;
                 if (
+                    !NonCollidable&&
                     _mass >= otherParticle._mass &&
                     d2 <= _collapseRadiusSqr &&
                     MathHelper.Abs((_speed - otherParticle._speed).Length) < 0.2
