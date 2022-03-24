@@ -2,7 +2,7 @@
 
 This application demonstrate [swarm intelligence](https://en.wikipedia.org/wiki/Swarm_intelligence) algorithm
 
-![Demo](../ReadmeAssets/swarmIntelligence_demo_1.mp4)
+https://user-images.githubusercontent.com/26148013/159098347-26931df0-47af-409f-a04c-f2ce527c86a6.mp4
 
 ## Build from source
 
