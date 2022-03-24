@@ -215,20 +215,23 @@ namespace Gravity
                     break;
 
                 case Keys.M: /* Focus on the heaviest object */
-                    var heavyObject = particles.Find(x => x.Mass == maxMass);
-                    heavyObject.PositionStory.Clear();
-                    var deltaPos = heavyObject.Position;
-                    var heavyObjectSpeed = heavyObject.Speed;
-                    foreach (var item in particles)
+                    if (particles.Count > 0)
                     {
-                        item.Speed -= heavyObjectSpeed;
-                        item.Position -= deltaPos;
-                        for (var i = 0; i < item.PositionStory.Count; i++)
+                        var heavyObject = particles.Find(x => x.Mass == maxMass);
+                        heavyObject.PositionStory.Clear();
+                        var deltaPos = heavyObject.Position;
+                        var heavyObjectSpeed = heavyObject.Speed;
+                        foreach (var item in particles)
                         {
-                            item.PositionStory[i] -= deltaPos;
+                            item.Speed -= heavyObjectSpeed;
+                            item.Position -= deltaPos;
+                            for (var i = 0; i < item.PositionStory.Count; i++)
+                            {
+                                item.PositionStory[i] -= deltaPos;
+                            }
                         }
                     }
-                    originPointPosition = Vector2d.Zero;
+                    originPointPosition = Vector2d.Zero;                    
                     break;
 
                 case Keys.U: /* Unfollow */
