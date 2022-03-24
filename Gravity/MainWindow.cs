@@ -18,6 +18,7 @@ namespace Gravity
     {
 
         List<Particle> particles = new List<Particle>();
+        Particle cursorParticle = new Particle(cursorPosition, 1) { NonCollidable=true};
 
         double interractionK = 0.07;
 
@@ -30,7 +31,7 @@ namespace Gravity
         Vector2d mouseFactor;
         Vector2i windowCenter;
 
-        Vector2d cursorPosition;
+        static Vector2d cursorPosition = Vector2d.Zero;
         Vector2d originPointPosition = Vector2d.Zero;
         Vector2d originPointMarkerWidth = new Vector2d(0.04, 0);
         Vector2d originPointMarkerHeight = new Vector2d(0, 0.04);
@@ -86,9 +87,18 @@ namespace Gravity
             GL.LoadIdentity();
         }
 
+        protected void UpdateCursorParticle()
+        {
+            if (!createParticle)
+            {
+                cursorParticle.Position = (cursorPosition - originPointPosition * scale) / scale;
+            }            
+        }
+
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
             cursorPosition = (MousePosition - windowCenter) * mouseFactor;
+            UpdateCursorParticle();
 
             if (isMoveScene && followTo == null)
             {
@@ -180,6 +190,7 @@ namespace Gravity
             }
 
             scale = viewScale * _meterScale;
+            UpdateCursorParticle();
         }
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
@@ -242,9 +253,26 @@ namespace Gravity
                     displayOriginPoint = !displayOriginPoint;
                     break;
 
+                case Keys.LeftControl:
+                case Keys.RightControl:
+                case Keys.LeftShift:
+                case Keys.RightShift:
+                    double mass = 1;
+                    if (KeyboardState.IsKeyDown(Keys.LeftShift))
+                    {
+                        mass *= 100;
+                    }
+
+                    if (KeyboardState.IsKeyDown(Keys.LeftControl))
+                    {
+                        mass *= 1000;
+                    }
+                    cursorParticle.Mass = mass;
+                    break;
+
                 default:
                     break;
-            }
+            }            
         }
 
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
@@ -318,11 +346,14 @@ namespace Gravity
             base.OnUpdateFrame(args);
             List<Particle> removed = new List<Particle>();
             accelerations = new List<(Vector2d, Vector2d, Color)>();
-            foreach (var item in particles)
+            foreach (var item in particles.Concat(new[]{ cursorParticle}))
             {
                 item.TrackSegmentSize = (trackSegmentSize * trackSegmentSize);
                 item.Interaction(particles, args.Time);
-                item.Tick(args.Time);
+                if (item != cursorParticle)
+                {
+                    item.Tick(args.Time);
+                }                
                 item.InteractionRadius = item.Mass * interractionK;
 
                 if ((item.Accelerations?.Count ?? 0) > 0 && showVectors)
@@ -334,7 +365,7 @@ namespace Gravity
                     {
                         bool isMax = a.LengthSquared == max;
                         var r = (Vector2d.NormalizeFast(a) * (0.02+k*a.LengthSquared) / _meterScale);
-                        accelerations.Add((item.Position, item.Position + r, Color.FromArgb(200, (isMax ? Color.Red : Color.Yellow))));
+                        accelerations.Add((item.Position, item.Position + r, Color.FromArgb(item==cursorParticle?50:200, (isMax ? Color.Red : Color.Yellow))));
                     }                    
                 }
 
