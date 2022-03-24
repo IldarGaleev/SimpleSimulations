@@ -386,8 +386,8 @@ namespace Gravity
                 foreach (var item in accelerations)
                 {                    
                     GL.Color4(item.Item3);
-                    GL.Vertex2(item.Item1*scale);
-                    GL.Vertex2(item.Item2*scale);
+                    GL.Vertex2((item.Item1+originPointPosition)*scale);
+                    GL.Vertex2((item.Item2+originPointPosition)*scale);
                 }
                 GL.End();
             }
