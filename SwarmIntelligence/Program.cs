@@ -2,7 +2,6 @@
 
 
 using OpenTK.Windowing.Desktop;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,12 +45,12 @@ namespace SwarmIntelligence
 #if FULLSCREEN
                 WindowState=OpenTK.Windowing.Common.WindowState.Fullscreen,
 #else
-                Size = new OpenTK.Mathematics.Vector2i(1024, 768),
+                    Size = new OpenTK.Mathematics.Vector2i(1024, 768),
                     WindowState = OpenTK.Windowing.Common.WindowState.Normal,
-                    WindowBorder=OpenTK.Windowing.Common.WindowBorder.Fixed,                    
+                    WindowBorder = OpenTK.Windowing.Common.WindowBorder.Fixed,
 #endif
 
-                Flags = OpenTK.Windowing.Common.ContextFlags.Default,
+                    Flags = OpenTK.Windowing.Common.ContextFlags.Default,
                     Profile = OpenTK.Windowing.Common.ContextProfile.Compatability,
 
                 };
@@ -68,14 +67,14 @@ namespace SwarmIntelligence
                         if (ct.IsCancellationRequested)
                         {
                             mainWindow.Dispose();
-                            
+
                         }
                     };
-                    
+
                     mainWindow.Run();
-                    
+
                 }
-            },ct);
+            }, ct);
         }
 
     }

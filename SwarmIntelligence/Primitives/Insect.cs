@@ -1,9 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SwarmIntelligence.Primitives
 {
@@ -12,18 +7,20 @@ namespace SwarmIntelligence.Primitives
         protected Box2d _listenArea;
 
         protected Vector2d _position;
-        public Vector2d Position { 
-            get=>_position;
+        public Vector2d Position
+        {
+            get => _position;
             set
             {
                 _position = value;
                 _listenArea.Center = _position;
-            } 
+            }
         }
 
         protected double _listenRadius = 0;
 
-        public double ListenRadius {
+        public double ListenRadius
+        {
             get => _listenRadius;
             set
             {
@@ -34,21 +31,23 @@ namespace SwarmIntelligence.Primitives
 
         protected Vector2d _acceleration;
 
-        public Vector2d Acceleration { 
+        public Vector2d Acceleration
+        {
             get => _acceleration;
             set
             {
                 _acceleration = value;
                 _accelerationMagnitude = value.Length;
-            } 
+            }
         }
 
         protected double _accelerationMagnitude;
-        public double AccelerationMagnitude {
+        public double AccelerationMagnitude
+        {
             get => _accelerationMagnitude;
             set
             {
-                _acceleration = Vector2d.NormalizeFast(_acceleration) * value;                 
+                _acceleration = Vector2d.NormalizeFast(_acceleration) * value;
             }
         }
 
@@ -61,20 +60,20 @@ namespace SwarmIntelligence.Primitives
             ListenRadius = listenRadius;
         }
 
-        public static Vector2d Rotate(Vector2d vector,double angle)
+        public static Vector2d Rotate(Vector2d vector, double angle)
         {
             double g = MathHelper.DegreesToRadians(angle);
-            return  Vector2d.Transform(vector, new Quaterniond(g, 0, 0));
+            return Vector2d.Transform(vector, new Quaterniond(g, 0, 0));
         }
 
         public void Rotate(double angle)
         {
-            _acceleration= Rotate(_acceleration,angle);
+            _acceleration = Rotate(_acceleration, angle);
         }
 
         public virtual bool Collision(Insect other)
         {
-            if (other==this)
+            if (other == this)
             {
                 return false;
             }
@@ -96,7 +95,7 @@ namespace SwarmIntelligence.Primitives
             Position += (_acceleration * timeDelta);
         }
 
-        public void DirectTo(Vector2d pos,double acceleration)
+        public void DirectTo(Vector2d pos, double acceleration)
         {
             _acceleration = Vector2d.NormalizeFast(pos - _position) * acceleration;
             _accelerationMagnitude = acceleration;

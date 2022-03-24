@@ -1,9 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gravity.Primitives
 {
@@ -17,16 +14,17 @@ namespace Gravity.Primitives
         protected Vector2d _position;
         protected Vector2d _speed;
         protected Vector2d _acceleration;
-        
+
         protected double _mass;
         protected double _interactionRadius;
         protected double _interactionRadiusSquare;
-        protected double _collapseRadiusSqr= MathHelper.Pow(CollapseRadius,2);
+        protected double _collapseRadiusSqr = MathHelper.Pow(CollapseRadius, 2);
         protected int _positionStoryDepth;
 
 
-        public double TrackSegmentSize { get=>_trackSegmentSize; set=>_trackSegmentSize=value; }
-        public Vector2d Position { 
+        public double TrackSegmentSize { get => _trackSegmentSize; set => _trackSegmentSize = value; }
+        public Vector2d Position
+        {
             get => _position; set
             {
                 //if (value.X<-1)
@@ -55,15 +53,17 @@ namespace Gravity.Primitives
         public bool Fixed { get; set; }
 
         public Double Mass { get => _mass; set => _mass = value; }
-        public Double InteractionRadius { 
-            get => _interactionRadius; 
-            set {
+        public Double InteractionRadius
+        {
+            get => _interactionRadius;
+            set
+            {
                 _interactionRadius = value;
                 _interactionRadiusSquare = MathHelper.Pow(value, 2);
-            } 
+            }
         }
 
-        public Particle(Vector2d position,double mass,double interactionRadius=0.1)
+        public Particle(Vector2d position, double mass, double interactionRadius = 0.1)
         {
             _position = position;
             _mass = mass;
@@ -73,7 +73,7 @@ namespace Gravity.Primitives
         }
         protected List<Vector2d> _positionStory = new List<Vector2d>();
 
-        public int PositionStoryDepth { get=>_positionStoryDepth; set=>_positionStoryDepth=value; }
+        public int PositionStoryDepth { get => _positionStoryDepth; set => _positionStoryDepth = value; }
         public List<Vector2d> PositionStory { get => _positionStory; }
 
         Vector2d lastPos;
@@ -95,7 +95,7 @@ namespace Gravity.Primitives
                 _acceleration = new Vector2d(0);
             }
 
-            if(Vector2d.DistanceSquared(Position, lastPos)>_trackSegmentSize)
+            if (Vector2d.DistanceSquared(Position, lastPos) > _trackSegmentSize)
             {
                 lastPos = Position;
                 _positionStory.Add(Position);
@@ -110,7 +110,7 @@ namespace Gravity.Primitives
 
         public List<Vector2d> Accelerations { get; set; }
 
-        public void Interaction(ICollection<Particle> particles,double dTime)
+        public void Interaction(ICollection<Particle> particles, double dTime)
         {
             if (_mass == 0)
                 return;
@@ -118,7 +118,7 @@ namespace Gravity.Primitives
             Accelerations = new List<Vector2d>();
             foreach (var otherParticle in particles)
             {
-                if (otherParticle==this)
+                if (otherParticle == this)
                 {
                     continue;
                 }
@@ -126,23 +126,23 @@ namespace Gravity.Primitives
                 Vector2d direction = otherParticle.Position - Position;
                 double d2 = direction.LengthSquared;
                 if (
-                    _mass>=otherParticle._mass &&
-                    d2 <= _collapseRadiusSqr && 
+                    _mass >= otherParticle._mass &&
+                    d2 <= _collapseRadiusSqr &&
                     MathHelper.Abs((_speed - otherParticle._speed).Length) < 0.2
                     )
                 {
                     _mass += otherParticle._mass;
                     _speed += ((otherParticle._speed * otherParticle._mass) / _mass);
-                    
+
                     otherParticle._mass = 0;
                 }
                 else
                 {
-                    var a=Vector2d.NormalizeFast(direction) * ((G * (_mass * otherParticle._mass) / d2) / (_mass));
+                    var a = Vector2d.NormalizeFast(direction) * ((G * (_mass * otherParticle._mass) / d2) / (_mass));
                     Accelerations.Add(a);
                     _acceleration += a;
-                
-                }                
+
+                }
             }
 
             //Accelerations = Accelerations.Select(x => Vector2d.NormalizeFast(x)*0.3).ToList();

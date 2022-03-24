@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace SwarmIntelligence
 {
-    public class MainWindow:GameWindow
+    public class MainWindow : GameWindow
     {
 
         const int antsCount = 900;
         const int mealCount = 15;
         const int finderCount = 10;
         const double acceleration = 0.07;
-        const double listenDistance = acceleration*1.1;
-        const double mealDistance = acceleration*0.5;
+        const double listenDistance = acceleration * 1.1;
+        const double mealDistance = acceleration * 0.5;
 
 
         Random random = new Random();
@@ -32,7 +32,7 @@ namespace SwarmIntelligence
 
         double[] mealVertexes = new double[mealCount * 2 * 3];
         double[] mealColors = new double[mealCount * 4 * 3];
-        
+
         double[] insectVertexes = new double[antsCount * 2];
         double[] insectColors = new double[antsCount * 4];
 
@@ -41,7 +41,7 @@ namespace SwarmIntelligence
         static Vector2d c = Insect.Rotate(a, -120);
 
 
-        Ant[] ants=new Ant[antsCount];
+        Ant[] ants = new Ant[antsCount];
         List<Meal> meals = new List<Meal>(mealCount);
         Dictionary<int, Color> colors = new Dictionary<int, Color>() {
             {0,Color.FromArgb(100,Color.Red) }
@@ -54,35 +54,35 @@ namespace SwarmIntelligence
 
         private Color getColor(int id)
         {
-            if (colors.TryGetValue(id,out Color result))
+            if (colors.TryGetValue(id, out Color result))
             {
                 return result;
             }
             else
             {
-                Color res = Color.FromArgb(140,random.Next(60, 255), random.Next(100, 255), random.Next(30, 255));
+                Color res = Color.FromArgb(140, random.Next(60, 255), random.Next(100, 255), random.Next(30, 255));
                 colors.Add(id, res);
                 return res;
             }
         }
         public override void Close()
         {
-            
+
             base.Close();
         }
 
-        public MainWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings):
+        public MainWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) :
             base(gameWindowSettings, nativeWindowSettings)
         {
 
         }
 
-        
+
         private Vector2d RandomCoordinate()
         {
             double x = (0.5 - random.NextDouble()) * 2;
             double y = (0.5 - random.NextDouble()) * 2;
-            return new Vector2d(x,y);
+            return new Vector2d(x, y);
         }
 
         protected override void OnLoad()
@@ -98,8 +98,8 @@ namespace SwarmIntelligence
             InitSimulation();
 
             VSync = VSyncMode.On;
-            
-            
+
+
             //VSync = VSyncMode.Off;
             //CursorGrabbed = true;
             //CursorVisible = true;
@@ -112,17 +112,18 @@ namespace SwarmIntelligence
 
 
         private void InitSimulation()
-        {           
+        {
             meals = new List<Meal>();
             ants = new Ant[antsCount];
 
             for (int i = 0; i < mealCount; i++)
             {
-                var newMeal = new Meal {
+                var newMeal = new Meal
+                {
                     Pos = RandomCoordinate(),
-                    Volume = random.Next(50, 100) / 100.0 
+                    Volume = random.Next(50, 100) / 100.0
                 };
-                
+
                 meals.Add(newMeal);
             }
 
@@ -134,7 +135,7 @@ namespace SwarmIntelligence
                 mealColors[offset + 0] = color.R / 255.0;
                 mealColors[offset + 1] = color.G / 255.0;
                 mealColors[offset + 2] = color.B / 255.0;
-                mealColors[offset + 3] = i==0?100:color.A / 100.0;
+                mealColors[offset + 3] = i == 0 ? 100 : color.A / 100.0;
 
                 mealColors[offset + 4] = color.R / 255.0;
                 mealColors[offset + 5] = color.G / 255.0;
@@ -152,10 +153,10 @@ namespace SwarmIntelligence
                 ants[i] = new Ant(RandomCoordinate(), listenDistance);
                 ants[i].DirectTo(RandomCoordinate(), acceleration);
                 ants[i].Speed = acceleration;
-                ants[i].Distances = Enumerable.Repeat<double>(1000,mealCount).ToList();
+                ants[i].Distances = Enumerable.Repeat<double>(1000, mealCount).ToList();
                 ants[i].Target = random.Next(1, mealCount - 1);
                 ants[i].Finder = (i < finderCount);
-            }            
+            }
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -163,11 +164,11 @@ namespace SwarmIntelligence
             mouseFactor = new Vector2d(2.0 / e.Width, -2.0 / e.Height);
             windowCenter = new Vector2i(e.Width / 2, e.Height / 2);
 
-            
+
             base.OnResize(e);
-            
-            GL.Viewport(0,0,e.Width,e.Height);
-            
+
+            GL.Viewport(0, 0, e.Width, e.Height);
+
             GL.LoadIdentity();
         }
 
@@ -226,7 +227,7 @@ namespace SwarmIntelligence
                  mealColors[offsetColor + 3] = meals[id].Volume + 0.2;
                  mealColors[offsetColor + 7] = meals[id].Volume + 0.2;
                  mealColors[offsetColor + 11] = meals[id].Volume + 0.2;
-            });
+             });
 
             int[] availableMeal = meals.GetRange(1, mealCount - 1).Where(x => x.NotEmpty).Select(x => meals.IndexOf(x)).ToArray();
 
@@ -299,22 +300,22 @@ namespace SwarmIntelligence
         }
 
 
-        
+
 
 
         private void DrawMeals()
         {
             GL.EnableClientState(ArrayCap.ColorArray);
             GL.ColorPointer(4, ColorPointerType.Double, 0, mealColors);
-            
+
             GL.EnableClientState(ArrayCap.VertexArray);
-            GL.VertexPointer(2, VertexPointerType.Double, 0, mealVertexes);            
-            
-            GL.DrawArrays(PrimitiveType.Triangles, 0, mealCount*3);
-            
+            GL.VertexPointer(2, VertexPointerType.Double, 0, mealVertexes);
+
+            GL.DrawArrays(PrimitiveType.Triangles, 0, mealCount * 3);
+
             GL.DisableClientState(ArrayCap.ColorArray);
             GL.DisableClientState(ArrayCap.VertexArray);
-            
+
         }
 
         private void DrawInsects()
@@ -335,7 +336,7 @@ namespace SwarmIntelligence
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-  
+
             GL.PointSize(2.0f);
             DrawMeals();
             DrawInsects();

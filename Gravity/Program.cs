@@ -27,7 +27,7 @@ namespace Gravity
                 {
                     Flags = OpenTK.Windowing.Common.ContextFlags.Default,
                     WindowBorder = OpenTK.Windowing.Common.WindowBorder.Resizable,
-                    WindowState = (o.FullScreen?OpenTK.Windowing.Common.WindowState.Fullscreen:OpenTK.Windowing.Common.WindowState.Normal),
+                    WindowState = (o.FullScreen ? OpenTK.Windowing.Common.WindowState.Fullscreen : OpenTK.Windowing.Common.WindowState.Normal),
                     Size = new OpenTK.Mathematics.Vector2i(o.Width, o.Height),
                     Profile = OpenTK.Windowing.Common.ContextProfile.Compatability,
                 };
@@ -71,10 +71,11 @@ namespace Gravity
                             throw new Exception("No celestials for simulate!");
                         }
                         Console.Clear();
-                        using (MainWindow mainWindow = new MainWindow(gameWindowSettings, nativeWindowSettings, particles) {
-                            ShowInteractions=o.ShowInteractions,
-                            ShowTracks=o.ShowTracks,
-                            WorldSize=o.WorldSize,
+                        using (MainWindow mainWindow = new MainWindow(gameWindowSettings, nativeWindowSettings, particles)
+                        {
+                            ShowInteractions = o.ShowInteractions,
+                            ShowTracks = o.ShowTracks,
+                            WorldSize = o.WorldSize,
                             DisplayOriginPoint = o.DisplayOriginPoint,
                             //TimeScale=o.TimeScale
                         })

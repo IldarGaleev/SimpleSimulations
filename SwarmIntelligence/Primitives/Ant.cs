@@ -1,20 +1,17 @@
 ﻿using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SwarmIntelligence.Primitives
 {
-    public class Ant:Insect
+    public class Ant : Insect
     {
         //public class MealInfo
         //{
         //    public double Distance { get; set; }
         //    public bool Available { get; set; }
         //}
-        
+
         private Random random;
         public int Target { get; set; }
         public List<double> Distances { get; set; }
@@ -22,8 +19,8 @@ namespace SwarmIntelligence.Primitives
 
         public double Speed { get; set; }
 
-        public Ant(Vector2d position,double listenRadius=0.08):
-            base(position,listenRadius)
+        public Ant(Vector2d position, double listenRadius = 0.08) :
+            base(position, listenRadius)
         {
             Distances = new List<double>();
             random = new Random();
@@ -31,12 +28,12 @@ namespace SwarmIntelligence.Primitives
 
         public override void Step(double timeDelta)
         {
-            Rotate((0.5 - random.NextDouble())*10);
+            Rotate((0.5 - random.NextDouble()) * 10);
             base.Step(timeDelta);
 
-            for(int i=0;i<Distances.Count;i++)
+            for (int i = 0; i < Distances.Count; i++)
             {
-                Distances[i]+=timeDelta;                
+                Distances[i] += timeDelta;
             }
             //if (Distances[Target] > (3/AccelerationMagnitude))
             //{
@@ -47,12 +44,12 @@ namespace SwarmIntelligence.Primitives
         int totalStep = 0;
         public bool Meet(Ant other)
         {
-            if (other==this)
+            if (other == this)
             {
                 return false;
             }
             double distance = Vector2d.Distance(Position, other.Position);
-            bool result=(distance<=_listenRadius);
+            bool result = (distance <= _listenRadius);
             if (result)
             {
                 //if (distance < 0.1 && (Acceleration + other.Acceleration).Length < Vector2d.MagnitudeMax(Acceleration, other.Acceleration).Length)
@@ -62,21 +59,21 @@ namespace SwarmIntelligence.Primitives
                 //    other.Rotate(r);
                 //    Rotate(r);
                 //}
-                for (int i= 0; i < Distances.Count; i++)
+                for (int i = 0; i < Distances.Count; i++)
                 {
-                    
-                    double newDistance = other.Distances[i] + ListenRadius*2;
-                    if (Distances[i]>newDistance)
+
+                    double newDistance = other.Distances[i] + ListenRadius * 2;
+                    if (Distances[i] > newDistance)
                     {
                         Distances[i] = newDistance;
 
-                        if ((i==Target) && !Finder)
+                        if ((i == Target) && !Finder)
                         {
-                            if (newDistance>40)
+                            if (newDistance > 40)
                             {
                                 totalStep++;
                             }
-                            if (totalStep>25)
+                            if (totalStep > 25)
                             {
                                 DirectTo(Vector2d.Zero, _accelerationMagnitude);
                                 totalStep = 0;
@@ -97,7 +94,7 @@ namespace SwarmIntelligence.Primitives
                             {
                                 DirectTo(other.Position, _accelerationMagnitude);
                             }
-                            
+
                         }
                     }
                 }
@@ -106,14 +103,14 @@ namespace SwarmIntelligence.Primitives
         }
 
 
-        public void NextTarget(int[] list=null)
+        public void NextTarget(int[] list = null)
         {
-            
-            if (Target == 0 || (list?.Length??0)>0)
+
+            if (Target == 0 || (list?.Length ?? 0) > 0)
             {
-                if (list.Length==0)
+                if (list.Length == 0)
                 {
-                    Target = 0; 
+                    Target = 0;
                     return;
                 }
                 totalStep = 0;
@@ -123,7 +120,7 @@ namespace SwarmIntelligence.Primitives
             {
                 Target = 0;
             }
-            
+
         }
     }
 }

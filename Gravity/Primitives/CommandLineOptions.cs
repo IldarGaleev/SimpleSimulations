@@ -1,17 +1,12 @@
 ﻿using CommandLine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gravity.Primitives
 {
     public class CommandLineOptions
     {
         [Option(
-            longName:"celestialfile",
-            shortName:'c',
+            longName: "celestialfile",
+            shortName: 'c',
             Required = false,
             HelpText = "csv file with initial celestial bodies",
             Default = "Data/celestial_init.csv"
@@ -19,10 +14,10 @@ namespace Gravity.Primitives
         public string CelestialFileName { get; set; }
 
         [Option(
-            longName:"fullscreen",
-            shortName:'f',
-            Required =false,
-            HelpText ="Fullscreen mode",
+            longName: "fullscreen",
+            shortName: 'f',
+            Required = false,
+            HelpText = "Fullscreen mode",
             Default = false
             )]
         public bool FullScreen { get; set; }

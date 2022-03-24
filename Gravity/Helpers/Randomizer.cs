@@ -1,15 +1,11 @@
 ﻿using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gravity.Helpers
 {
     public static class Randomizer
     {
-        private static Random random= new Random();
+        private static Random random = new Random();
 
         public static Vector2d GetVector()
         {
