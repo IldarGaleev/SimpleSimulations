@@ -89,10 +89,14 @@ namespace Gravity
 
         protected void UpdateCursorParticle()
         {
-            if (!createParticle)
+            if (createParticle)
+            {
+                cursorParticle.Position = (newParticlePos - originPointPosition * scale) / scale;
+            }
+            else
             {
                 cursorParticle.Position = (cursorPosition - originPointPosition * scale) / scale;
-            }            
+            }
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
@@ -321,6 +325,7 @@ namespace Gravity
         private void moveScene(Vector2d delta)
         {
             originPointPosition += delta;
+            UpdateCursorParticle();
         }
 
 
