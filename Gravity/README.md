@@ -55,5 +55,6 @@ https://user-images.githubusercontent.com/26148013/159098245-1f63e998-75ff-4ebb-
 | `R`   | Add random particles           |
 | `T`   | Toggle displaying tracks       |
 | `U`   | Stop Tracking an object        |
+| `Ctrl + S` | Save the particles to a CSV file under the "Data" path. |
 | `1`   | Reset scale                    |
 | `Esc` | Close application              |
