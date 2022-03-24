@@ -328,13 +328,14 @@ namespace Gravity
                 if ((item.Accelerations?.Count ?? 0) > 0 && showVectors)
                 {
                     var max = item.Accelerations.Max(x => x.LengthSquared);
+                    var k = 0.01/max;
 
                     foreach (var a in item.Accelerations)
                     {
                         bool isMax = a.LengthSquared == max;
-                        var r = (Vector2d.NormalizeFast(a) * (isMax ? 0.04 : 0.02) / _meterScale);
+                        var r = (Vector2d.NormalizeFast(a) * (0.02+k*a.LengthSquared) / _meterScale);
                         accelerations.Add((item.Position, item.Position + r, Color.FromArgb(200, (isMax ? Color.Red : Color.Yellow))));
-                    }
+                    }                    
                 }
 
             }
